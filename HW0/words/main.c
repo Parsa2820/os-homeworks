@@ -117,6 +117,10 @@ static bool wordcount_less(const WordCount *wc1, const WordCount *wc2)
   {
     return true;
   }
+  if (wc1->count > wc2->count)
+  {
+    return false;
+  }
   return strcmp(wc1->word, wc2->word) < 0;
 }
 
@@ -212,7 +216,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    // wordcount_sort(&word_counts, wordcount_less);
+    wordcount_sort(&word_counts, wordcount_less);
 
     printf("The frequencies of each word are: \n");
     fprint_words(word_counts, stdout);

@@ -37,12 +37,8 @@ void init_words(WordCount **wclist)
 
 size_t len_words(WordCount *wchead)
 {
-  if (wchead == NULL || wchead->word == NULL)
-  {
-    return 0;
-  }
-  size_t len = 1;
-  WordCount *current = wchead->next;
+  size_t len = 0;
+  WordCount *current = wchead;
   while (current != NULL)
   {
     len++;
