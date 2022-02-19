@@ -80,7 +80,6 @@ int num_words(FILE *infile)
  */
 void count_words(WordCount **wclist, FILE *infile)
 {
-  printf("here\n");
   char word[MAX_WORD_LEN] = {0};
   char c;
   char c_str[2] = {0};
@@ -89,12 +88,10 @@ void count_words(WordCount **wclist, FILE *infile)
     if (isalpha(c))
     {
       c_str[0] = tolower(c);
-      printf("***%s***\n", c_str);
       strcat(word, c_str);
     }
     else if (1 < strlen(word) && strlen(word) < MAX_WORD_LEN)
     {
-      printf("**%s\n", word);
       add_word(wclist, word);
       word[0] = 0;
     }
@@ -107,7 +104,7 @@ void count_words(WordCount **wclist, FILE *infile)
   {
     add_word(wclist, word);
   }
-  return num_words;
+  return;
 }
 
 /*
@@ -203,7 +200,7 @@ int main(int argc, char *argv[])
       }
       else
       {
-        count_words(word_counts, infile);
+        count_words(&word_counts, infile);
       }
       fclose(infile);
     }
@@ -215,7 +212,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    wordcount_sort(&word_counts, wordcount_less);
+    // wordcount_sort(&word_counts, wordcount_less);
 
     printf("The frequencies of each word are: \n");
     fprint_words(word_counts, stdout);
