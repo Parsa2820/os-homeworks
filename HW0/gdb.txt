@@ -1,63 +1,102 @@
 GDB Practice:
 
 آ.
-
+gdb map
 ب.
-
+break main
 ج.
-
+run
 د.
-
+print argv
     *
-
+$1 = (char **) 0x7fffffffe138
 ه.
-
+print *argv
     *
-
+$2 = 0x7fffffffe3bf "/home/vagrant/code/handouts/HW0/map"
 و.
-
+tbreak recur
+continue
 ز.
-
+print recur
     *
-
+$3 = {int (int)} 0x5555555546cd <recur>
 ح.
-
+tbreak recur
+continue
 ط.
-
+tbreak 8
+continue
 ی.
-
-ک
-
+layout asm
+ک. 
+tbreak *recur+53
+continue
 ل.
-
+info registers
     *
-
+rax            0x1      1
+rbx            0x0      0
+rcx            0x0      0
+rdx            0x0      0
+rsi            0x555555756340   93824994337600
+rdi            0x1      1
+rbp            0x7fffffffe040   0x7fffffffe040
+rsp            0x7fffffffe020   0x7fffffffe020
+r8             0x0      0
+r9             0x7ffff7b502e0   140737349223136
+r10            0x0      
+r11            0x246    582
+r12            0x555555554580   93824992232832
+r13            0x7fffffffe190   140737488347536
+r14            0x0      0
+r15            0x0      0
+rip            0x555555554702   0x555555554702 <recur+53>
+eflags         0x202    [ IF ]
+cs             0x33     51
+ss             0x2b     43
+ds             0x0      0
+es             0x0      0
+fs             0x0      0
+gs             0x0      0
 م.
-
+step
 ن.
-
+layout src
 س.
-
+backtrace
 ع.
-
+tbreak recur if i == 0
 ف.
-
+continue
 ص.
-
+backtrace
 ق.
-
+frame 4
+print argc
 ر.
-
+next
+next
+next
+next
+next
+next
+next
 ش.
-
+layout asm
 ت.
-
+nothing
     *
-
+0x5555555546c6 <main+60>        mov    $0x0,%eax
+0x5555555546cb <main+65>        leaveq
+0x5555555546cb <main+65>        leaveq
 ث.
-
+layout src
 خ.
-
+next
+next
+next
 ذ.
-
+continue
 ض.
+quit
