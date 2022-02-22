@@ -1,4 +1,5 @@
-##### In the name of God
+# CE424-002-98102284
+## Parsa Mohammadian
 
-# CE424-002-handouts
-### Read-Only Repo
+## Contents
+- Introduction to advanced C programming ( [HW0](./HW0/) )
