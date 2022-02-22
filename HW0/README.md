@@ -1,4 +1,4 @@
-# OS HW0 Report - Parsa Mohammadian - 98102284
+# OS HW0 Report
 
 ## Table of Contents
 - [Setting Up The Environment](#setting-up-the-environment)
@@ -37,7 +37,7 @@ Hopefully, this fixed the problem. I then used the following command to connect 
 ```
 vagrant ssh
 ```
-Later, when I got my Gogs account, I ran the `vm_patch.sh` script.
+Later, when I got my Gogs account, I ran the `vm_patch.sh` script in order to set up repositories. I ran into some problems with the script which had carriage return characters. To solve this problem, I opened the file in vim and used `:set ff=unix` command.
 ### Setting Up Git
 I used my name and email to config git globaly. Then I used `ssh-keygen` to generate a key pair in my VM machine. Then I copied the public key to my account settings on Gogs and Github(for extra safety).
 ### Setting Up SSH for VSCode
