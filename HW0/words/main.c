@@ -189,6 +189,14 @@ int main(int argc, char *argv[])
   {
     // No input file specified, instead, read from STDIN instead.
     infile = stdin;
+    if (count_mode)
+    {
+      total_words += num_words(infile);
+    }
+    else
+    {
+      count_words(&word_counts, infile);
+    }
   }
   else
   {
