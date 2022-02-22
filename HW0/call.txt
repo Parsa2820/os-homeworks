@@ -8,6 +8,9 @@ ln37:	call	recur
 
 %eax contains the value of i. So at line 34, we decrease it by 1. This way we are making i-1 which is the input of the function recur. In next two lines we are pushing the value of i to the stack. This is how parameters are passed to the function in this assembly. Line 37 is the call to the function recur.
 ================================================================================
+
+
+
 2.
 .text contains the program code.
 .data contains the program data.
@@ -270,6 +273,9 @@ Disassembly of section .eh_frame:
   5c:   00 00                   add    %al,(%eax)
         ...
 ================================================================================
+
+
+
 3.
 objdump -t recurse.obj
 
@@ -290,13 +296,35 @@ SYMBOL TABLE:
 00000000 g     F .text.__x86.get_pc_thunk.ax    00000000 .hidden __x86.get_pc_thunk.ax
 00000000         *UND*  00000000 _GLOBAL_OFFSET_TABLE_
 00000000         *UND*  00000000 printf
-================================================================================4.
+================================================================================
+
+
+4.
 g: Global symbol.
 O: Object symbol.
 *UND*: Undefined symbol.
-================================================================================5.
+================================================================================
 
-================================================================================6.
+
+5.
+With relocation option, we can find other address of the 'malloc' function.
+
+objdump --reloc map.obj
+
+map.obj:     file format elf32-i386
+
+RELOCATION RECORDS FOR [.text]:
+OFFSET   TYPE              VALUE 
+00000013 R_386_PC32        __x86.get_pc_thunk.bx
+00000019 R_386_GOTPC       _GLOBAL_OFFSET_TABLE_
+0000002a R_386_PLT32       malloc
+0000003a R_386_PLT32       malloc
+0000004a R_386_PLT32       recur
+================================================================================
+
+
+
+6.
 We can find recur symbol in map.obj and recurse.obj files. We already seen recurse.obj symbol table in section 3. Here is the symbol table of map.obj file:
 
 objdump -t map.obj
@@ -320,7 +348,11 @@ SYMBOL TABLE:
 00000000         *UND*  00000000 _GLOBAL_OFFSET_TABLE_
 00000000         *UND*  00000000 malloc
 00000000         *UND*  00000000 recur
-================================================================================7.
+================================================================================
+
+
+
+7.
 gcc -m32 map.obj recurse.obj -o map
 
 map:     file format elf32-i386
