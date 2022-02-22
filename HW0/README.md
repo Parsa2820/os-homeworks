@@ -39,10 +39,9 @@ vagrant ssh
 ```
 Later, when I got my Gogs account, I ran the `vm_patch.sh` script.
 ### Setting Up Git
-I used my name and email to config git globaly. 
-<!-- TODO: Set SSH key for Git -->
+I used my name and email to config git globaly. Then I used `ssh-keygen` to generate a key pair in my VM machine. Then I copied the public key to my account settings on Gogs and Github(for extra safety).
 ### Setting Up SSH for VSCode
-Since I am used to VSCode, I want to use [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) extension to connect to the virtual machine. But before I can use it, I need to set up SSH keys. I used `ssh-keygen` to generate a key pair in my local machine. Then I manually copied the public key to my virtual machine. After that I connected to the virtual machine with SSH.
+Since I am used to VSCode, I want to use [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) extension to connect to the virtual machine. But before I can use it, I need to set up SSH keys. This is similar to what I did for Gogs. The difference is that I store private key on my own machine, and the public key on VM machine.
 
 ## Learn to Work with Necessary Tools
 I mainly used provided links and some other tutorials on the YouTube to learn how to work with the tools. 
@@ -69,3 +68,4 @@ First I read the `rlimit` man page and then I used `getrlimit` function in order
 I execute GDB commands as instructioned in the doc. The commands and outputs are in [gdb.txt](./gdb.txt) file.
 
 ### Compiling, Assembling, and Linking
+For this part, I followed the given instructions. The commands and outputs are in [call.txt](./call.txt) file.
