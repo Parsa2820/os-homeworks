@@ -353,6 +353,8 @@ SYMBOL TABLE:
 
 
 7.
+As we excpected, two symbol tables merged into this one. We can see some symbols which where priviously undefined, now are defined in resulting symbol table. For example, recur symbol is undefined in map.obj file, but since we have it in recurse.obj file, it is present in this symbol table.
+
 gcc -m32 map.obj recurse.obj -o map
 
 map:     file format elf32-i386
