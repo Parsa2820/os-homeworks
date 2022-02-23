@@ -1,0 +1,6 @@
+io.o
+main.o
+parse.o
+process.o
+shell.o
+shell
