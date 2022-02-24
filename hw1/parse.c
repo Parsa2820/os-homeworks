@@ -12,39 +12,47 @@
 
 #define TOKseparator " \n:"
 
-tok_t *getToks(char *line) {
+tok_t *getToks(char *line)
+{
   int i;
   char *c;
 
-  tok_t *toks = malloc(MAXTOKS*sizeof(tok_t));
-  for (i=0; i<MAXTOKS; i++) toks[i] = NULL;     /* empty token array */
-  
+  tok_t *toks = malloc(MAXTOKS * sizeof(tok_t));
+  for (i = 0; i < MAXTOKS; i++)
+    toks[i] = NULL; /* empty token array */
 
-  c = strtok(line,TOKseparator);	 /* Start tokenizer on line */
-  for (i=0; c && (i < MAXTOKS); i++) {
+  c = strtok(line, TOKseparator); /* Start tokenizer on line */
+  for (i = 0; c && (i < MAXTOKS); i++)
+  {
     toks[i] = c;
-    c = strtok(NULL,TOKseparator);	/* scan for next token */
+    c = strtok(NULL, TOKseparator); /* scan for next token */
   }
   return toks;
 }
 
-void freeToks(tok_t *toks) {
+void freeToks(tok_t *toks)
+{
   free(toks);
 }
 
-void fprintTok(FILE *ofile, tok_t *t) {
+void fprintTok(FILE *ofile, tok_t *t)
+{
   int i;
-  for (i=0; i<MAXTOKS && t[i]; i++) {
-    fprintf(ofile,"%s ", t[i]);
+  for (i = 0; i < MAXTOKS && t[i]; i++)
+  {
+    fprintf(ofile, "%s ", t[i]);
   }
-  fprintf(ofile,"\n");
+  fprintf(ofile, "\n");
 }
 
 /* Locate special processing character */
-int isDirectTok(tok_t *t, char *R) {
+int isDirectTok(tok_t *t, char *R)
+{
   int i;
-  for (i=0; i<MAXTOKS-1 && t[i]; i++) {
-    if (strncmp(t[i],R,1) == 0) return i;
+  for (i = 0; i < MAXTOKS - 1 && t[i]; i++)
+  {
+    if (strncmp(t[i], R, 1) == 0)
+      return i;
   }
   return 0;
 }

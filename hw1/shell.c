@@ -11,6 +11,7 @@
 #define FALSE 0
 #define TRUE 1
 #define INPUT_STRING_SIZE 80
+#define FILE_SEPARATOR "/"
 
 #include "io.h"
 #include "parse.h"
@@ -71,6 +72,66 @@ int cmd_cd(tok_t arg[])
     printf("%s\n", strerror(errno));
   }
   return 1;
+}
+
+int execute_and_wait(char *path, tok_t arg[])
+{
+  if (path == NULL)
+  {
+    printf("Command '%s' not found\n", path);
+    return 1;
+  }
+  pid_t pid = fork();
+  if (pid == 0)
+  {
+    // child
+    if (execv(arg[0], arg) == -1)
+    {
+      // printf("%s\n", strerror(errno));
+      // exit(1);
+    }
+  }
+  else
+  {
+    // parent
+    int status;
+    waitpid(pid, &status, 0);
+  }
+  return 1;
+}
+
+char *combine_path(char *path, char *file)
+{
+  char *combined_path = malloc(strlen(path) + strlen(file) + 2);
+  strcat(combined_path, path);
+  strcat(combined_path, FILE_SEPARATOR);
+  strcat(combined_path, file);
+  return combined_path;
+}
+
+char *find_program(char *name)
+{
+  char *env_path = getenv("PATH");
+  tok_t *paths = getToks(env_path);
+  for (int i = 0; i < MAXTOKS && paths[i] != NULL; i++)
+  {
+    printf("%s\n", paths[i]);
+    char *path = combine_path(paths[i], name);
+    if (access(path, X_OK) == 0)
+    {
+      freeToks(paths);
+      return path;
+    }
+    free(path);
+  }
+  freeToks(paths);
+  return NULL;
+}
+
+int run_program(tok_t arg[])
+{
+  char *path = strchr(arg[0], FILE_SEPARATOR) ? find_program(arg[0]) : arg[0];
+  execute_and_wait(path, arg);
 }
 
 int lookup(char cmd[])
@@ -156,7 +217,7 @@ int shell(int argc, char *argv[])
       cmd_table[fundex].fun(&t[1]);
     else
     {
-      fprintf(stdout, "This shell only supports built-ins. Replace this to run programs as commands.\n");
+      run_program(t);
     }
     // fprintf(stdout, "%d: ", lineNum);
   }
