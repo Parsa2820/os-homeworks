@@ -142,6 +142,7 @@ int run_program(tok_t arg[])
   else
   {
     path = find_program(arg[0]);
+    arg[0] = path;
   }
   execute_and_wait(path, arg);
 }
