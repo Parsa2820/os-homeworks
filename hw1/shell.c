@@ -78,7 +78,7 @@ int execute_and_wait(char *path, tok_t arg[])
 {
   if (path == NULL)
   {
-    printf("Command '%s' not found\n", path);
+    printf("Command not found\n");
     return 1;
   }
   pid_t pid = fork();
@@ -109,15 +109,19 @@ char *combine_path(char *path, char *file)
   return combined_path;
 }
 
+int file_exists(char *path)
+{
+  return access(path, F_OK) == 0;
+}
+
 char *find_program(char *name)
 {
   char *env_path = getenv("PATH");
   tok_t *paths = getToks(env_path);
   for (int i = 0; i < MAXTOKS && paths[i] != NULL; i++)
   {
-    printf("%s\n", paths[i]);
     char *path = combine_path(paths[i], name);
-    if (access(path, X_OK) == 0)
+    if (file_exists(path))
     {
       freeToks(paths);
       return path;
@@ -130,7 +134,15 @@ char *find_program(char *name)
 
 int run_program(tok_t arg[])
 {
-  char *path = strchr(arg[0], FILE_SEPARATOR) ? find_program(arg[0]) : arg[0];
+  char *path;
+  if (strstr(arg[0], FILE_SEPARATOR))
+  {
+    path = file_exists(arg[0]) ? arg[0] : NULL;
+  }
+  else
+  {
+    path = find_program(arg[0]);
+  }
   execute_and_wait(path, arg);
 }
 

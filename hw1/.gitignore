@@ -4,3 +4,4 @@ parse.o
 process.o
 shell.o
 shell
+in.txt
