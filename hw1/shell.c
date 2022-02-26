@@ -78,24 +78,19 @@ int execute_and_wait(char *path, tok_t arg[])
 {
   if (path == NULL)
   {
-    printf("Command not found\n");
+    printf("Command '%s' not found\n", arg[0]);
     return 1;
   }
   pid_t pid = fork();
   if (pid == 0)
   {
     // child
-    if (execv(arg[0], arg) == -1)
-    {
-      // printf("%s\n", strerror(errno));
-      // exit(1);
-    }
+    execv(arg[0], arg);
   }
   else
   {
     // parent
-    int status;
-    waitpid(pid, &status, 0);
+    wait(NULL);
   }
   return 1;
 }
@@ -114,21 +109,29 @@ int file_exists(char *path)
   return access(path, F_OK) == 0;
 }
 
+tok_t *get_paths()
+{
+  static tok_t *paths = NULL;
+  if (paths == NULL)
+  {
+    char *env_path = getenv("PATH");
+    paths = getToks(env_path);
+  }
+  return paths;
+}
+
 char *find_program(char *name)
 {
-  char *env_path = getenv("PATH");
-  tok_t *paths = getToks(env_path);
+  tok_t *paths = get_paths();
   for (int i = 0; i < MAXTOKS && paths[i] != NULL; i++)
   {
     char *path = combine_path(paths[i], name);
     if (file_exists(path))
     {
-      freeToks(paths);
       return path;
     }
     free(path);
   }
-  freeToks(paths);
   return NULL;
 }
 
@@ -142,7 +145,10 @@ int run_program(tok_t arg[])
   else
   {
     path = find_program(arg[0]);
-    arg[0] = path;
+    if (path != NULL)
+    {
+      arg[0] = path;
+    }
   }
   execute_and_wait(path, arg);
 }
@@ -229,9 +235,7 @@ int shell(int argc, char *argv[])
     if (fundex >= 0)
       cmd_table[fundex].fun(&t[1]);
     else
-    {
       run_program(t);
-    }
     // fprintf(stdout, "%d: ", lineNum);
   }
   return 0;
