@@ -6,6 +6,12 @@
 #include <sys/wait.h>
 #include <termios.h>
 
+void redirect_process_io(process *p)
+{
+  dup2(p->stdin, STDIN_FILENO);
+  dup2(p->stdout, STDOUT_FILENO);
+}
+
 /**
  * Executes the process p.
  * If the shell is in interactive mode and the process is a foreground process,
@@ -13,7 +19,9 @@
  */
 void launch_process(process *p)
 {
-  /** YOUR CODE HERE */
+  redirect_process_io(p);
+  // printf("salam%d\n", p->pid);
+  execv(p->argv[0], p->argv);
 }
 
 /* Put a process in the foreground. This function assumes that the shell

@@ -64,3 +64,16 @@ size_t countToks(tok_t *t)
     size++;
   return size;
 }
+
+void removeTok(tok_t *toks, int index, size_t size_to_remove)
+{
+  for (int i = index; i < size_to_remove; i++)
+  {
+    toks[i] = NULL;
+  }
+  for (int i = index + size_to_remove; i < MAXTOKS - 1 && toks[i] != NULL; i++)
+  {
+    toks[i - size_to_remove] = toks[i];
+    toks[i] = NULL;
+  }
+}

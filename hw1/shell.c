@@ -7,6 +7,7 @@
 #include <termios.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 #define FALSE 0
 #define TRUE 1
@@ -14,6 +15,7 @@
 #define FILE_SEPARATOR "/"
 #define REDIRECT_IN "<"
 #define REDIRECT_OUT ">"
+#define BACKGROUND_OPERATOR "&"
 
 #include "io.h"
 #include "parse.h"
@@ -97,55 +99,6 @@ int cmd_help(tok_t arg[])
   return 1;
 }
 
-void redirect_io(tok_t arg[])
-{
-  // FILE *out = fopen("./out.txt", "w");
-  // dup2(fileno(out), fileno(stdout));
-  // fclose(out);
-  int old_file_no;
-  FILE *new_file;
-  int index;
-  if (index = isDirectTok(arg, REDIRECT_IN))
-  {
-    old_file_no = fileno(stdin);
-    new_file = open(arg[index + 1], "r");
-  }
-  else if (index = isDirectTok(arg, REDIRECT_OUT))
-  {
-    old_file_no = fileno(stdout);
-    new_file = open(arg[index + 1], "w");
-  }
-  else
-  {
-    return;
-  }
-  dup2(fileno(new_file), old_file_no);
-  // close(new_file);
-  arg[index] = NULL;
-}
-
-int execute_and_wait(char *path, tok_t arg[])
-{
-  if (path == NULL)
-  {
-    printf("Command '%s' not found\n", arg[0]);
-    return 1;
-  }
-  pid_t pid = fork();
-  if (pid == 0)
-  {
-    // child
-    redirect_io(arg);
-    execv(arg[0], arg);
-  }
-  else
-  {
-    // parent
-    wait(NULL);
-  }
-  return 1;
-}
-
 char *find_program(char *name)
 {
   tok_t *paths = get_paths();
@@ -161,22 +114,31 @@ char *find_program(char *name)
   return NULL;
 }
 
-int run_program(tok_t arg[])
+int validate_program(tok_t arg[])
 {
   char *path;
   if (strstr(arg[0], FILE_SEPARATOR))
   {
-    path = file_exists(arg[0]) ? arg[0] : NULL;
+    if (!file_exists(arg[0]))
+    {
+      printf("%s: command not found\n", arg[0]);
+      return FALSE;
+    }
   }
   else
   {
     path = find_program(arg[0]);
-    if (path != NULL)
+    if (path == NULL)
+    {
+      printf("%s: command not found\n", arg[0]);
+      return FALSE;
+    }
+    else
     {
       arg[0] = path;
     }
   }
-  execute_and_wait(path, arg);
+  return TRUE;
 }
 
 int lookup(char cmd[])
@@ -229,44 +191,71 @@ void add_process(process *p)
   /** YOUR CODE HERE */
 }
 
-void remove_redirect(tok_t *t, char *redirect_symbol)
+int find_process_io(tok_t *t, char *symbol, int defualt, int flag)
 {
-  int index = isDirectTok(t, redirect_symbol);
+  int index = isDirectTok(t, symbol);
   if (index == 0)
   {
-    return;
+    return defualt;
   }
-  for (int i = index + 2; t[i] != NULL; i++)
+  int file_no = open(t[index + 1], flag);
+  if (file_no == -1)
   {
-    t[i - 2] = t[i];
-    t[i] = NULL;
+    printf("%s\n", strerror(errno));
+    return -1;
   }
+  removeTok(t, index, 2);
+  return file_no;
 }
 
-/**
- * Initialize a newly created process
- */
-void init_process(process *p, tok_t *t)
+char is_background(tok_t *t)
 {
-  // p->stdin = redirect_in(t);
-  // p->stdout = redirect_out(t);
-  // p->stderr = STDERR_FILENO;
-  // remove_redirect(t, REDIRECT_IN);
-  // remove_redirect(t, REDIRECT_OUT);
-  // p->argv = t;
-  // p->argc = countToks(t);
+  int index = isDirectTok(t, BACKGROUND_OPERATOR);
+  if (index == 0)
+  {
+    return FALSE;
+  }
+  removeTok(t, index, 1);
+  return TRUE;
 }
+
+typedef struct a
+{
+  int status;
+  struct termios tmodes;
+  struct process *prev;
+} a;
 
 /**
  * Creates a process given the inputString from stdin
  */
-process *create_process(char *inputString)
+process *create_process(tok_t *t)
 {
   /** YOUR CODE HERE */
-  tok_t *t = getToks(inputString);
   process *p = malloc(sizeof(process));
-  init_process(p, t);
-  return NULL;
+  int stdin_no = find_process_io(t, REDIRECT_IN, STDIN_FILENO, O_RDONLY);
+  if (stdin_no == -1)
+  {
+    return NULL;
+  }
+  p->stdin = stdin_no;
+  int stdout_no = find_process_io(t, REDIRECT_OUT, STDOUT_FILENO, O_WRONLY);
+  if (stdout_no == -1)
+  {
+    return NULL;
+  }
+  p->stdout = stdout_no;
+  p->stderr = STDERR_FILENO;
+  p->background = is_background(t);
+  p->argv = t;
+  p->argc = countToks(t);
+  p->pid = 0;
+  p->completed = FALSE;
+  p->stopped = FALSE;
+  p->status = 0;
+  p->next = NULL;
+  p->tmodes = shell_tmodes;
+  return p;
 }
 
 int shell(int argc, char *argv[])
@@ -290,9 +279,39 @@ int shell(int argc, char *argv[])
     t = getToks(s);        /* break the line into tokens */
     fundex = lookup(t[0]); /* Is first token a shell literal */
     if (fundex >= 0)
+    {
       cmd_table[fundex].fun(&t[1]);
+    }
     else
-      run_program(t);
+    {
+      // run_program(t);
+      if (!validate_program(t))
+      {
+        continue;
+      }
+      process *p = create_process(t);
+      if (p == NULL)
+      {
+        continue;
+      }
+      add_process(p);
+      cpid = fork();
+      if (cpid == 0)
+      {
+        // child
+        p->pid = getpid();
+        launch_process(p);
+      }
+      else
+      {
+        // parent
+        if (p->background == FALSE)
+        {
+          waitpid(cpid, &p->status, 0);
+          p->completed = TRUE;
+        }
+      }
+    }
     // fprintf(stdout, "%d: ", lineNum);
   }
   return 0;

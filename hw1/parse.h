@@ -34,5 +34,6 @@ typedef char *tok_t;
 tok_t *getToks(char *line);
 void freeToks(tok_t *toks);
 size_t countToks(tok_t *toks);
+void removeTok(tok_t *toks, int index, size_t size_to_remove);
 
 #endif
