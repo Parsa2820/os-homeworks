@@ -8,7 +8,7 @@
 
 typedef struct process
 {
-  char** argv;
+  char **argv;
   int argc;
   pid_t pid;
   char completed;
@@ -17,14 +17,14 @@ typedef struct process
   int status;
   struct termios tmodes;
   int stdin, stdout, stderr;
-  struct process* next;
-  struct process* prev;
+  struct process *next;
+  struct process *prev;
 } process;
 
-process* first_process; //pointer to the first process that is launched */
+process *first_process; // pointer to the first process that is launched */
 
-void launch_process(process* p);
-void put_process_in_background (process* p, int cont);
-void put_process_in_foreground (process* p, int cont);
+void launch_process(process *p);
+void put_process_in_background(process *p, int cont);
+void put_process_in_foreground(process *p, int cont);
 
 #endif

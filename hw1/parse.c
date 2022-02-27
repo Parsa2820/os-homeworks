@@ -56,3 +56,11 @@ int isDirectTok(tok_t *t, char *R)
   }
   return 0;
 }
+
+size_t countToks(tok_t *t)
+{
+  size_t size = 0;
+  while (size < MAXTOKS && t[size] != NULL)
+    size++;
+  return size;
+}

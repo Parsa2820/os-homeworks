@@ -12,11 +12,38 @@
 #define TRUE 1
 #define INPUT_STRING_SIZE 80
 #define FILE_SEPARATOR "/"
+#define REDIRECT_IN "<"
+#define REDIRECT_OUT ">"
 
 #include "io.h"
 #include "parse.h"
 #include "process.h"
 #include "shell.h"
+
+tok_t *get_paths()
+{
+  static tok_t *paths = NULL;
+  if (paths == NULL)
+  {
+    char *env_path = getenv("PATH");
+    paths = getToks(env_path);
+  }
+  return paths;
+}
+
+char *combine_path(char *path, char *file)
+{
+  char *combined_path = malloc(strlen(path) + strlen(file) + 2);
+  strcat(combined_path, path);
+  strcat(combined_path, FILE_SEPARATOR);
+  strcat(combined_path, file);
+  return combined_path;
+}
+
+int file_exists(char *path)
+{
+  return access(path, F_OK) == 0;
+}
 
 int cmd_quit(tok_t arg[])
 {
@@ -27,9 +54,22 @@ int cmd_quit(tok_t arg[])
 
 int cmd_help(tok_t arg[]);
 
-int cmd_pwd(tok_t arg[]);
+int cmd_pwd(tok_t arg[])
+{
+  char *cwd = getcwd(NULL, 0);
+  printf("%s\n", cwd);
+  free(cwd);
+  return 1;
+}
 
-int cmd_cd(tok_t arg[]);
+int cmd_cd(tok_t arg[])
+{
+  if (chdir(arg[0]) != 0)
+  {
+    printf("%s\n", strerror(errno));
+  }
+  return 1;
+}
 
 /* Command Lookup table */
 typedef int cmd_fun_t(tok_t args[]); /* cmd functions take token array and return int */
@@ -57,21 +97,31 @@ int cmd_help(tok_t arg[])
   return 1;
 }
 
-int cmd_pwd(tok_t arg[])
+void redirect_io(tok_t arg[])
 {
-  char *cwd = getcwd(NULL, 0);
-  printf("%s\n", cwd);
-  free(cwd);
-  return 1;
-}
-
-int cmd_cd(tok_t arg[])
-{
-  if (chdir(arg[0]) != 0)
+  // FILE *out = fopen("./out.txt", "w");
+  // dup2(fileno(out), fileno(stdout));
+  // fclose(out);
+  int old_file_no;
+  FILE *new_file;
+  int index;
+  if (index = isDirectTok(arg, REDIRECT_IN))
   {
-    printf("%s\n", strerror(errno));
+    old_file_no = fileno(stdin);
+    new_file = open(arg[index + 1], "r");
   }
-  return 1;
+  else if (index = isDirectTok(arg, REDIRECT_OUT))
+  {
+    old_file_no = fileno(stdout);
+    new_file = open(arg[index + 1], "w");
+  }
+  else
+  {
+    return;
+  }
+  dup2(fileno(new_file), old_file_no);
+  // close(new_file);
+  arg[index] = NULL;
 }
 
 int execute_and_wait(char *path, tok_t arg[])
@@ -85,6 +135,7 @@ int execute_and_wait(char *path, tok_t arg[])
   if (pid == 0)
   {
     // child
+    redirect_io(arg);
     execv(arg[0], arg);
   }
   else
@@ -93,31 +144,6 @@ int execute_and_wait(char *path, tok_t arg[])
     wait(NULL);
   }
   return 1;
-}
-
-char *combine_path(char *path, char *file)
-{
-  char *combined_path = malloc(strlen(path) + strlen(file) + 2);
-  strcat(combined_path, path);
-  strcat(combined_path, FILE_SEPARATOR);
-  strcat(combined_path, file);
-  return combined_path;
-}
-
-int file_exists(char *path)
-{
-  return access(path, F_OK) == 0;
-}
-
-tok_t *get_paths()
-{
-  static tok_t *paths = NULL;
-  if (paths == NULL)
-  {
-    char *env_path = getenv("PATH");
-    paths = getToks(env_path);
-  }
-  return paths;
 }
 
 char *find_program(char *name)
@@ -203,12 +229,43 @@ void add_process(process *p)
   /** YOUR CODE HERE */
 }
 
+void remove_redirect(tok_t *t, char *redirect_symbol)
+{
+  int index = isDirectTok(t, redirect_symbol);
+  if (index == 0)
+  {
+    return;
+  }
+  for (int i = index + 2; t[i] != NULL; i++)
+  {
+    t[i - 2] = t[i];
+    t[i] = NULL;
+  }
+}
+
+/**
+ * Initialize a newly created process
+ */
+void init_process(process *p, tok_t *t)
+{
+  p->stdin = redirect_in(t);
+  p->stdout = redirect_out(t);
+  p->stderr = STDERR_FILENO;
+  remove_redirect(t, REDIRECT_IN);
+  remove_redirect(t, REDIRECT_OUT);
+  p->argv = t;
+  p->argc = countToks(t);
+}
+
 /**
  * Creates a process given the inputString from stdin
  */
 process *create_process(char *inputString)
 {
   /** YOUR CODE HERE */
+  tok_t *t = getToks(inputString);
+  process *p = malloc(sizeof(process));
+  init_process(p, t);
   return NULL;
 }
 
