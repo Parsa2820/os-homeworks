@@ -248,13 +248,13 @@ void remove_redirect(tok_t *t, char *redirect_symbol)
  */
 void init_process(process *p, tok_t *t)
 {
-  p->stdin = redirect_in(t);
-  p->stdout = redirect_out(t);
-  p->stderr = STDERR_FILENO;
-  remove_redirect(t, REDIRECT_IN);
-  remove_redirect(t, REDIRECT_OUT);
-  p->argv = t;
-  p->argc = countToks(t);
+  // p->stdin = redirect_in(t);
+  // p->stdout = redirect_out(t);
+  // p->stderr = STDERR_FILENO;
+  // remove_redirect(t, REDIRECT_IN);
+  // remove_redirect(t, REDIRECT_OUT);
+  // p->argv = t;
+  // p->argc = countToks(t);
 }
 
 /**
