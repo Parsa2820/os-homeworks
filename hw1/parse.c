@@ -67,7 +67,7 @@ size_t countToks(tok_t *t)
 
 void removeTok(tok_t *toks, int index, size_t size_to_remove)
 {
-  for (int i = index; i < size_to_remove; i++)
+  for (int i = index; i < index + size_to_remove; i++)
   {
     toks[i] = NULL;
   }

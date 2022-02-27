@@ -239,7 +239,8 @@ process *create_process(tok_t *t)
     return NULL;
   }
   p->stdin = stdin_no;
-  int stdout_no = find_process_io(t, REDIRECT_OUT, STDOUT_FILENO, O_WRONLY);
+  int out_flag = O_WRONLY | O_CREAT | O_TRUNC;
+  int stdout_no = find_process_io(t, REDIRECT_OUT, STDOUT_FILENO, out_flag);
   if (stdout_no == -1)
   {
     return NULL;
