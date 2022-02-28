@@ -20,7 +20,10 @@ void redirect_process_io(process *p)
 void launch_process(process *p)
 {
   redirect_process_io(p);
-  // printf("salam%d\n", p->pid);
+  if (p->background)
+  {
+    // printf("background pid: %d\n", p->pid);
+  }
   execv(p->argv[0], p->argv);
 }
 

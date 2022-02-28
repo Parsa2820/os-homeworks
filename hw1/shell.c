@@ -73,6 +73,12 @@ int cmd_cd(tok_t arg[])
   return 1;
 }
 
+int cmd_wait(tok_t arg[])
+{
+  wait(NULL);
+  return 1;
+}
+
 /* Command Lookup table */
 typedef int cmd_fun_t(tok_t args[]); /* cmd functions take token array and return int */
 typedef struct fun_desc
@@ -87,6 +93,7 @@ fun_desc_t cmd_table[] = {
     {cmd_quit, "quit", "quit the command shell"},
     {cmd_pwd, "pwd", "print working directory"},
     {cmd_cd, "cd", "change directory"},
+    {cmd_wait, "wait", "wait for background processes"},
 };
 
 int cmd_help(tok_t arg[])
