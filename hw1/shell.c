@@ -275,7 +275,7 @@ int shell(int argc, char *argv[])
 
   lineNum = 0;
   // fprintf(stdout, "%d: ", lineNum);
-  while ((s = freadln(stdin)))
+  while (printf("$ ") && (s = freadln(stdin)))
   {
     t = getToks(s);        /* break the line into tokens */
     fundex = lookup(t[0]); /* Is first token a shell literal */
