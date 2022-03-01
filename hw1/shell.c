@@ -159,10 +159,6 @@ int lookup(char cmd[])
   return -1;
 }
 
-void control_shell_signals()
-{
-}
-
 void init_shell()
 {
   /* Check if we are running interactively */
@@ -291,9 +287,9 @@ int shell(int argc, char *argv[])
   char *s = malloc(INPUT_STRING_SIZE + 1); /* user input string */
   tok_t *t;                                /* tokens parsed from input */
   int fundex = -1;
-  pid_t pid = getpid();   /* get current processes PID */
-  pid_t ppid = getppid(); /* get parents PID */
-  pid_t cpid, tcpid, cpgid;
+  // pid_t pid = getpid();   /* get current processes PID */
+  // pid_t ppid = getppid(); /* get parents PID */
+  // pid_t cpid, tcpid, cpgid;
 
   init_shell();
 

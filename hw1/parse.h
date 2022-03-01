@@ -33,6 +33,7 @@ typedef char *tok_t;
 
 tok_t *getToks(char *line);
 void freeToks(tok_t *toks);
+int isDirectTok(tok_t *t, char *R);
 size_t countToks(tok_t *toks);
 void removeTok(tok_t *toks, int index, size_t size_to_remove);
 
