@@ -159,6 +159,10 @@ int lookup(char cmd[])
   return -1;
 }
 
+void control_shell_signals()
+{
+}
+
 void init_shell()
 {
   /* Check if we are running interactively */
@@ -188,6 +192,7 @@ void init_shell()
     tcgetattr(shell_terminal, &shell_tmodes);
   }
   /** YOUR CODE HERE */
+  set_signals(SIG_IGN);
 }
 
 /**
@@ -266,11 +271,32 @@ process *create_process(tok_t *t)
   return p;
 }
 
+void run_program(process *p)
+{
+  add_process(p);
+  pid_t cpid = fork();
+  if (cpid == 0)
+  {
+    // child
+    p->pid = getpid();
+    set_signals(SIG_DFL);
+    launch_process(p);
+  }
+  else
+  {
+    // parent
+    if (p->background == FALSE)
+    {
+      waitpid(cpid, &p->status, 0);
+      p->completed = TRUE;
+    }
+  }
+}
+
 int shell(int argc, char *argv[])
 {
   char *s = malloc(INPUT_STRING_SIZE + 1); /* user input string */
   tok_t *t;                                /* tokens parsed from input */
-  int lineNum = 0;
   int fundex = -1;
   pid_t pid = getpid();   /* get current processes PID */
   pid_t ppid = getppid(); /* get parents PID */
@@ -278,11 +304,7 @@ int shell(int argc, char *argv[])
 
   init_shell();
 
-  // printf("%s running as PID %d under %d\n",argv[0],pid,ppid);
-
-  lineNum = 0;
-  // fprintf(stdout, "%d: ", lineNum);
-  while (/* printf("$ ") && */ (s = freadln(stdin)))
+  while (/*printf("$ ") && */(s = freadln(stdin)))
   {
     t = getToks(s);        /* break the line into tokens */
     fundex = lookup(t[0]); /* Is first token a shell literal */
@@ -292,35 +314,14 @@ int shell(int argc, char *argv[])
     }
     else
     {
-      // run_program(t);
-      if (!validate_program(t))
+      process *p;
+      if (!validate_program(t) || (p = create_process(t)) == NULL)
       {
         continue;
       }
-      process *p = create_process(t);
-      if (p == NULL)
-      {
-        continue;
-      }
-      add_process(p);
-      cpid = fork();
-      if (cpid == 0)
-      {
-        // child
-        p->pid = getpid();
-        launch_process(p);
-      }
-      else
-      {
-        // parent
-        if (p->background == FALSE)
-        {
-          waitpid(cpid, &p->status, 0);
-          p->completed = TRUE;
-        }
-      }
+      run_program(p);
     }
-    // fprintf(stdout, "%d: ", lineNum);
   }
+
   return 0;
 }

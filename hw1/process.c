@@ -42,3 +42,13 @@ void put_process_in_background(process *p, int cont)
 {
   /** YOUR CODE HERE */
 }
+
+void set_signals(__sighandler_t handler)
+{
+  static int sig_list[] = {SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU, SIGCHLD};
+  static int sig_count = 5;
+  for (int i = 0; i < sig_count; i++)
+  {
+    signal(sig_list[i], handler);
+  }
+}
