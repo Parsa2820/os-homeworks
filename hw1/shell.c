@@ -287,11 +287,15 @@ void run_program(process *p)
     // child
     p->pid = getpid();
     set_signals(SIG_DFL);
+    printf("pid %d pgid %d\n", p->pid, getpgrp());
+    setpgrp();
+    printf("pid %d pgid %d\n", p->pid, getpgrp());
     launch_process(p);
   }
   else
   {
     // parent
+    printf("parent pid %d\n", getpid());
     if (p->background == FALSE)
     {
       waitpid(pid, &p->status, 0);
@@ -328,7 +332,7 @@ int shell(int argc, char *argv[])
 
   init_shell();
 
-  while (/*printf("\n$ ") &&*/ (s = freadln(stdin)))
+  while (printf("\n$ ") && (s = freadln(stdin)))
   {
     if (is_whitespace(s))
     {
