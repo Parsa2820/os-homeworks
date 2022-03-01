@@ -34,6 +34,15 @@ void launch_process(process *p)
 void put_process_in_foreground(process *p, int cont)
 {
   /** YOUR CODE HERE */
+  if (cont)
+  {
+    kill(p->pid, SIGCONT);
+  }
+  tcsetpgrp(shell_terminal, p->pid);
+  p->background = 0;
+  waitpid(p->pid, &p->status, 0);
+  p->completed = 1;
+  tcsetpgrp(shell_terminal, shell_pgid);
 }
 
 /* Put a process in the background. If the cont argument is true, send
@@ -41,11 +50,17 @@ void put_process_in_foreground(process *p, int cont)
 void put_process_in_background(process *p, int cont)
 {
   /** YOUR CODE HERE */
+  if (cont)
+  {
+    kill(p->pid, SIGCONT);
+  }
+  p->background = 1;
+  tcsetpgrp(shell_terminal, shell_pgid);
 }
 
 void set_signals(__sighandler_t handler)
 {
-  static int sig_list[] = {SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU, SIGCHLD};
+  static int sig_list[] = {SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU};
   static int sig_count = 5;
   for (int i = 0; i < sig_count; i++)
   {

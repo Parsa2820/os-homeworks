@@ -285,20 +285,21 @@ void run_program(process *p)
   if (pid == 0)
   {
     // child
-    p->pid = getpid();
     set_signals(SIG_DFL);
     launch_process(p);
   }
   else
   {
     // parent
+    p->pid = pid;
     setpgid(pid, pid);
-    if (p->background == FALSE)
+    if (p->background)
     {
-      tcsetpgrp(shell_terminal, pid);
-      waitpid(pid, &p->status, 0);
-      p->completed = TRUE;
-      tcsetpgrp(shell_terminal, shell_pgid);
+      put_process_in_background(p, FALSE);
+    }
+    else
+    {
+      put_process_in_foreground(p, FALSE);
     }
   }
 }
@@ -331,7 +332,7 @@ int shell(int argc, char *argv[])
 
   init_shell();
 
-  while (printf("\n$ ") && (s = freadln(stdin)))
+  while (/*printf("\n$ ") &&*/ (s = freadln(stdin)))
   {
     if (is_whitespace(s))
     {
