@@ -159,6 +159,22 @@ int lookup(char cmd[])
   return -1;
 }
 
+void init_process(process *p)
+{
+  p->stdin = STDIN_FILENO;
+  p->stdout = STDOUT_FILENO;
+  p->stderr = STDERR_FILENO;
+  p->background = FALSE;
+  p->argv = NULL;
+  p->argc = 0;
+  p->pid = 0;
+  p->completed = FALSE;
+  p->stopped = FALSE;
+  p->status = 0;
+  p->next = NULL;
+  p->tmodes = shell_tmodes;
+}
+
 void init_shell()
 {
   /* Check if we are running interactively */
@@ -189,6 +205,8 @@ void init_shell()
   }
   /** YOUR CODE HERE */
   set_signals(SIG_IGN);
+  first_process = malloc(sizeof(process));
+  init_process(first_process);
 }
 
 /**
@@ -196,7 +214,12 @@ void init_shell()
  */
 void add_process(process *p)
 {
-  /** YOUR CODE HERE */
+  process *cur = first_process;
+  while (cur->next != NULL)
+  {
+    cur = cur->next;
+  }
+  cur->next = p;
 }
 
 int find_process_io(tok_t *t, char *symbol, int defualt, int flag)
@@ -234,6 +257,7 @@ process *create_process(tok_t *t)
 {
   /** YOUR CODE HERE */
   process *p = malloc(sizeof(process));
+  init_process(p);
   int stdin_no = find_process_io(t, REDIRECT_IN, STDIN_FILENO, O_RDONLY);
   if (stdin_no == -1)
   {
@@ -251,20 +275,13 @@ process *create_process(tok_t *t)
   p->background = is_background(t);
   p->argv = t;
   p->argc = countToks(t);
-  p->pid = 0;
-  p->completed = FALSE;
-  p->stopped = FALSE;
-  p->status = 0;
-  p->next = NULL;
-  p->tmodes = shell_tmodes;
   return p;
 }
 
 void run_program(process *p)
 {
-  add_process(p);
-  pid_t cpid = fork();
-  if (cpid == 0)
+  pid_t pid = fork();
+  if (pid == 0)
   {
     // child
     p->pid = getpid();
@@ -276,7 +293,7 @@ void run_program(process *p)
     // parent
     if (p->background == FALSE)
     {
-      waitpid(cpid, &p->status, 0);
+      waitpid(pid, &p->status, 0);
       p->completed = TRUE;
     }
   }
@@ -308,6 +325,7 @@ int shell(int argc, char *argv[])
       {
         continue;
       }
+      add_process(p);
       run_program(p);
     }
   }
