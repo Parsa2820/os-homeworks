@@ -207,6 +207,7 @@ void init_shell()
   set_signals(SIG_IGN);
   first_process = malloc(sizeof(process));
   init_process(first_process);
+  first_process->pid = getpid();
 }
 
 /**
@@ -299,6 +300,23 @@ void run_program(process *p)
   }
 }
 
+int is_whitespace(char *s)
+{
+  if (s == NULL || *s == '\0')
+  {
+    return TRUE;
+  }
+  while (*s != '\0')
+  {
+    if (!isspace(*s))
+    {
+      return FALSE;
+    }
+    s++;
+  }
+  return TRUE;
+}
+
 int shell(int argc, char *argv[])
 {
   char *s = malloc(INPUT_STRING_SIZE + 1); /* user input string */
@@ -310,8 +328,12 @@ int shell(int argc, char *argv[])
 
   init_shell();
 
-  while (/*printf("$ ") && */ (s = freadln(stdin)))
+  while (/*printf("\n$ ") &&*/ (s = freadln(stdin)))
   {
+    if (is_whitespace(s))
+    {
+      continue;
+    }
     t = getToks(s);        /* break the line into tokens */
     fundex = lookup(t[0]); /* Is first token a shell literal */
     if (fundex >= 0)
