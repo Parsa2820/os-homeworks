@@ -287,19 +287,18 @@ void run_program(process *p)
     // child
     p->pid = getpid();
     set_signals(SIG_DFL);
-    printf("pid %d pgid %d\n", p->pid, getpgrp());
-    setpgrp();
-    printf("pid %d pgid %d\n", p->pid, getpgrp());
     launch_process(p);
   }
   else
   {
     // parent
-    printf("parent pid %d\n", getpid());
+    setpgid(pid, pid);
     if (p->background == FALSE)
     {
+      tcsetpgrp(shell_terminal, pid);
       waitpid(pid, &p->status, 0);
       p->completed = TRUE;
+      tcsetpgrp(shell_terminal, shell_pgid);
     }
   }
 }
