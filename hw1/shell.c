@@ -231,13 +231,6 @@ char is_background(tok_t *t)
   return TRUE;
 }
 
-typedef struct a
-{
-  int status;
-  struct termios tmodes;
-  struct process *prev;
-} a;
-
 /**
  * Creates a process given the inputString from stdin
  */
@@ -304,7 +297,7 @@ int shell(int argc, char *argv[])
 
   init_shell();
 
-  while (/*printf("$ ") && */(s = freadln(stdin)))
+  while (/*printf("$ ") && */ (s = freadln(stdin)))
   {
     t = getToks(s);        /* break the line into tokens */
     fundex = lookup(t[0]); /* Is first token a shell literal */
