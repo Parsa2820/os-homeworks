@@ -58,12 +58,12 @@ void put_process_in_background(process *p, int cont)
   tcsetpgrp(shell_terminal, shell_pgid);
 }
 
-void set_signals(__sighandler_t handler)
+void set_signals(signal_handler_factory handler_factory)
 {
   static int sig_list[] = {SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU};
   static int sig_count = 5;
   for (int i = 0; i < sig_count; i++)
   {
-    signal(sig_list[i], handler);
+    signal(sig_list[i], handler_factory(sig_list[i]));
   }
 }

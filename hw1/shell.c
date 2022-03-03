@@ -175,6 +175,22 @@ void init_process(process *p)
   p->tmodes = shell_tmodes;
 }
 
+void debug_signal_handler(int sig)
+{
+  // write(STDOUT_FILENO, "Signal caught\n", 14);
+  return;
+}
+
+__sighandler_t shell_signal_handler_factory(int signum)
+{
+  return SIG_IGN;
+}
+
+__sighandler_t subprocess_signal_handler_factory(int signum)
+{
+  return SIG_DFL;
+}
+
 void init_shell()
 {
   /* Check if we are running interactively */
@@ -204,7 +220,7 @@ void init_shell()
     tcgetattr(shell_terminal, &shell_tmodes);
   }
   /** YOUR CODE HERE */
-  set_signals(SIG_IGN);
+  set_signals(shell_signal_handler_factory);
   first_process = malloc(sizeof(process));
   init_process(first_process);
   first_process->pid = getpid();
@@ -285,7 +301,7 @@ void run_program(process *p)
   if (pid == 0)
   {
     // child
-    set_signals(SIG_DFL);
+    set_signals(subprocess_signal_handler_factory);
     launch_process(p);
   }
   else
@@ -332,7 +348,7 @@ int shell(int argc, char *argv[])
 
   init_shell();
 
-  while (/*printf("\n$ ") &&*/ (s = freadln(stdin)))
+  while (printf("\n$ ") && (s = freadln(stdin)))
   {
     if (is_whitespace(s))
     {

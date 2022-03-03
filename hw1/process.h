@@ -26,6 +26,7 @@ process *first_process; // pointer to the first process that is launched */
 void launch_process(process *p);
 void put_process_in_background(process *p, int cont);
 void put_process_in_foreground(process *p, int cont);
-void set_signals(__sighandler_t handler);
+typedef __sighandler_t (*signal_handler_factory)(int);
+void set_signals(signal_handler_factory handler_factory);
 
 #endif
