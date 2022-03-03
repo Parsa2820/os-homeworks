@@ -175,21 +175,6 @@ void init_process(process *p)
   p->tmodes = shell_tmodes;
 }
 
-void debug_signal_handler(int sig)
-{
-  write(STDOUT_FILENO, "Signal caught\n", 14);
-  exit(sig);
-}
-
-void tstp_signal_handler(int sig)
-{
-  // tcsetpgrp(shell_terminal, shell_pgid);
-  FILE *f = fopen("/home/vagrant/test/log.txt", "w");
-  fprintf(f, "SIGTSTP\n");
-  fclose(f);
-  return;
-}
-
 __sighandler_t shell_signal_handler_factory(int signum)
 {
   return SIG_IGN;
@@ -197,16 +182,7 @@ __sighandler_t shell_signal_handler_factory(int signum)
 
 __sighandler_t subprocess_signal_handler_factory(int signum)
 {
-  switch (signum)
-  {
-  case SIGTSTP:
-    return tstp_signal_handler;
-    break;
-
-  default:
-    return SIG_DFL;
-    break;
-  }
+  return SIG_DFL;
 }
 
 void init_shell()
