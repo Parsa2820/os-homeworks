@@ -40,7 +40,7 @@ void put_process_in_foreground(process *p, int cont)
   }
   tcsetpgrp(shell_terminal, p->pid);
   p->background = 0;
-  waitpid(p->pid, &p->status, 0);
+  waitpid(p->pid, &p->status, WUNTRACED);
   p->completed = 1;
   tcsetpgrp(shell_terminal, shell_pgid);
 }
