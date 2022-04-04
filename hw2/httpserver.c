@@ -19,6 +19,9 @@
 #include "wq.h"
 
 #define LONG_MAX_NUMBER_OF_DIGITS 20
+#define INDEX_FILE "/index.html"
+/* Maximum size of the generated html file (1<<20 = 1mb) */
+#define MAX_HTML_LENGTH 1<<30
 
 /*
  * Global configuration variables.
@@ -33,13 +36,41 @@ char *server_files_directory;
 char *server_proxy_hostname;
 int server_proxy_port;
 
+char *long_to_string(long int x)
+{
+  char *str = malloc(sizeof(char) * LONG_MAX_NUMBER_OF_DIGITS);
+  sprintf(str, "%ld", x);
+  return str;
+}
+
 char *file_content_length(char *path)
 {
   struct stat st;
   stat(path, &st);
-  char *content_length = malloc(sizeof(char) * LONG_MAX_NUMBER_OF_DIGITS);
-  sprintf(content_length, "%ld", st.st_size);
-  return content_length;
+  return long_to_string(st.st_size);
+}
+
+char *list_directory_in_html(char *path)
+{
+  DIR *dir = opendir(path);
+  struct dirent *dirent;
+  char *html = malloc(sizeof(char) * MAX_HTML_LENGTH);
+  strcpy(html, "<div>");
+  strcat(html, "<h1>Index of ");
+  strcat(html, path);
+  strcat(html, "</h1>");
+
+  while ((dirent = readdir(dir)) != NULL)
+  {
+    strcat(html, "<li><a href=\"");
+    strcat(html, dirent->d_name);
+    strcat(html, "\">");
+    strcat(html, dirent->d_name);
+    strcat(html, "</a></li>");
+  }
+
+  strcat(html, "</div>");
+  return html;
 }
 
 /*
@@ -73,11 +104,30 @@ void serve_file(int fd, char *path)
 
 void serve_directory(int fd, char *path)
 {
+  /* TODO: PART 1 Bullet 3,4 */
+  char *index_path = malloc(sizeof(char) * (strlen(path) + strlen(INDEX_FILE)));
+  strcpy(index_path, path);
+  strcat(index_path, INDEX_FILE);
+
+  struct stat s;
+  int err = stat(index_path, &s);
+
+  if (!err && S_ISREG(s.st_mode))
+  {
+    serve_file(fd, index_path);
+    free(index_path);
+    return;
+  }
+
+  free(index_path);
+  char *content = list_directory_in_html(path);
   http_start_response(fd, 200);
   http_send_header(fd, "Content-Type", http_get_mime_type(".html"));
+  http_send_header(fd, "Content-Length", long_to_string(strlen(content)));
   http_end_headers(fd);
-
-  /* TODO: PART 1 Bullet 3,4 */
+  http_send_string(fd, content);
+  free(content);
+  return;
 }
 
 /*
