@@ -133,7 +133,7 @@ void handle_files_request(int fd)
    * Feel FREE to delete/modify anything on this function.
    */
 
-  printf("path: %s\n", path);
+  // printf("path: %s\n", path);
 
   struct stat s;
   int err = stat(path, &s);
@@ -350,6 +350,8 @@ int main(int argc, char **argv)
         fprintf(stderr, "Expected argument after --files\n");
         exit_with_usage();
       }
+
+      chdir(server_files_directory);
     }
     else if (strcmp("--proxy", argv[i]) == 0)
     {
