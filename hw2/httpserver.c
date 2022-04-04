@@ -18,6 +18,8 @@
 #include "libhttp.h"
 #include "wq.h"
 
+#define LONG_MAX_NUMBER_OF_DIGITS 20
+
 /*
  * Global configuration variables.
  * You need to use these in your implementation of handle_files_request and
@@ -31,6 +33,15 @@ char *server_files_directory;
 char *server_proxy_hostname;
 int server_proxy_port;
 
+char *file_content_length(char *path)
+{
+  struct stat st;
+  stat(path, &st);
+  char *content_length = malloc(sizeof(char) * LONG_MAX_NUMBER_OF_DIGITS);
+  sprintf(content_length, "%ld", st.st_size);
+  return content_length;
+}
+
 /*
  * Serves the contents the file stored at `path` to the client socket `fd`.
  * It is the caller's reponsibility to ensure that the file stored at `path` exists.
@@ -40,14 +51,23 @@ int server_proxy_port;
  *            sesnsitive to time-out errors.
  */
 void serve_file(int fd, char *path) {
+  char *content_length_string = file_content_length(path);
 
   http_start_response(fd, 200);
   http_send_header(fd, "Content-Type", http_get_mime_type(path));
-  http_send_header(fd, "Content-Length", "0"); // Change this too
+  http_send_header(fd, "Content-Length", content_length_string); // Change this too
   http_end_headers(fd);
 
   /* TODO: PART 1 Bullet 2 */
-
+  FILE *f = fopen(path, "r");
+  size_t content_length = atoi(content_length_string);
+  char *content = malloc(sizeof(char) * content_length);
+  fread(content, sizeof(char), content_length, f);
+  fclose(f);
+  http_send_string(fd, content);
+  free(content);
+  free(content_length_string);
+  return;
 }
 
 void serve_directory(int fd, char *path) {
@@ -110,16 +130,26 @@ void handle_files_request(int fd) {
    * Feel FREE to delete/modify anything on this function.
    */
 
-  http_start_response(fd, 200);
+  printf("path: %s\n", path);
+
+  struct stat s;
+  int err = stat(path, &s);
+
+  if (!err && S_ISREG(s.st_mode))
+  {
+    serve_file(fd, path);
+    return;
+  }
+  
+  if (!err && S_ISDIR(s.st_mode))
+  {
+    serve_directory(fd, path);
+    return;
+  }
+
+  http_start_response(fd, 404);
   http_send_header(fd, "Content-Type", "text/html");
   http_end_headers(fd);
-  http_send_string(fd,
-      "<center>"
-      "<h1>Welcome to httpserver!</h1>"
-      "<hr>"
-      "<p>Nothing's here yet.</p>"
-      "</center>");
-
   close(fd);
   return;
 }
