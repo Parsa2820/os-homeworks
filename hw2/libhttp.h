@@ -23,7 +23,8 @@
 /*
  * Functions for parsing an HTTP request.
  */
-struct http_request {
+struct http_request
+{
   char *method;
   char *path;
 };

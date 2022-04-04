@@ -3,7 +3,8 @@
 #include "utlist.h"
 
 /* Initializes a work queue WQ. */
-void wq_init(wq_t *wq) {
+void wq_init(wq_t *wq)
+{
 
   /* TODO: Make me thread-safe! */
 
@@ -13,7 +14,8 @@ void wq_init(wq_t *wq) {
 
 /* Remove an item from the WQ. This function should block until there
  * is at least one item on the queue. */
-int wq_pop(wq_t *wq) {
+int wq_pop(wq_t *wq)
+{
 
   /* TODO: Make me blocking and thread-safe! */
 
@@ -27,7 +29,8 @@ int wq_pop(wq_t *wq) {
 }
 
 /* Add ITEM to WQ. */
-void wq_push(wq_t *wq, int client_socket_fd) {
+void wq_push(wq_t *wq, int client_socket_fd)
+{
 
   /* TODO: Make me thread-safe! */
 

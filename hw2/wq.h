@@ -6,13 +6,15 @@
 /* WQ defines a work queue which will be used to store accepted client sockets
  * waiting to be served. */
 
-typedef struct wq_item {
+typedef struct wq_item
+{
   int client_socket_fd; // Client socket to be served.
   struct wq_item *next;
   struct wq_item *prev;
 } wq_item_t;
 
-typedef struct wq {
+typedef struct wq
+{
   int size;
   wq_item_t *head;
   /* TODO: More stuff here, maybe? */
