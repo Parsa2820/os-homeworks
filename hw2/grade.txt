@@ -17,15 +17,15 @@
  ;   `.; ;                    : : "+. ; 
 
 
-Date: Mon Apr 04 2022 20:12:14 GMT+0100 (British Summer Time)
+Date: Mon Apr 04 2022 20:47:44 GMT+0100 (British Summer Time)
 httpserver
 	test file integrity ... PASS [1/1]
 	test request metadata ... FAIL [0/1]
 	test large file ... FAIL [0/1]
 	test nonexistent file ... PASS [1/1]
 	test status header ... PASS [1/1]
-	test default file ... FAIL [0/1]
-	test directory list ... FAIL [0/1]
+	test default file ... PASS [1/1]
+	test directory list ... PASS [1/1]
 	test cutting connection ... PASS [1/1]
 
 httpproxy
@@ -36,5 +36,5 @@ httpproxy
 	test pass-through proxy ... FAIL [0/1]
 
 -------------------
-score : 4/13
-:)epoch: 1649099698
+score : 6/13
+:)epoch: 1649101827
