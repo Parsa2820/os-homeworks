@@ -49,6 +49,6 @@ void wq_push(wq_t *wq, int client_socket_fd)
   DL_APPEND(wq->head, wq_item);
   wq->size++;
 
-  pthread_mutex_lock(&wq_mutex);
+  pthread_mutex_unlock(&wq_mutex);
   pthread_cond_signal(&wq_cond);
 }
