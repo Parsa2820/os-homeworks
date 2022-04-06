@@ -17,7 +17,7 @@
  ;   `.; ;                    : : "+. ; 
 
 
-Date: Mon Apr 04 2022 20:47:44 GMT+0100 (British Summer Time)
+Date: Wed Apr 06 2022 12:28:27 GMT+0100 (British Summer Time)
 httpserver
 	test file integrity ... PASS [1/1]
 	test request metadata ... FAIL [0/1]
@@ -37,4 +37,4 @@ httpproxy
 
 -------------------
 score : 6/13
-:)epoch: 1649101827
+:)epoch: 1649244670
