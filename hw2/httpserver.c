@@ -207,6 +207,41 @@ void handle_files_request(int fd)
   return;
 }
 
+typedef struct proxy_info
+{
+  int src_fd;
+  int dst_fd;
+  int *is_connection_open;
+} proxy_info_t;
+
+void *proxy(void *arg)
+{
+  proxy_info_t info = *(proxy_info_t *)arg;
+  char buf[LIBHTTP_REQUEST_MAX_SIZE];
+  int n;
+
+  while ((*info.is_connection_open) && ((n = read(info.src_fd, buf, LIBHTTP_REQUEST_MAX_SIZE)) > 0))
+  {
+    http_send_data(info.dst_fd, buf, n);
+  }
+
+  *info.is_connection_open = 0;
+  return NULL;
+}
+
+void exchange_client_server_data(int client, int server)
+{
+  int is_connection_open = 1;
+  proxy_info_t info = {client, server, &is_connection_open};
+  proxy_info_t reverse_info = {server, client, &is_connection_open};
+  pthread_t proxy_thread;
+
+  pthread_create(&proxy_thread, NULL, proxy, &info);
+
+  proxy(&reverse_info);
+  pthread_join(proxy_thread, NULL);
+}
+
 /*
  * Opens a connection to the proxy target (hostname=server_proxy_hostname and
  * port=server_proxy_port) and relays traffic to/from the stream fd and the
@@ -272,6 +307,7 @@ void handle_proxy_request(int fd)
   /*
    * TODO: Your solution for task 3 belongs here!
    */
+  exchange_client_server_data(fd, target_fd);
 }
 
 void *start_thread(void *arg)
