@@ -304,11 +304,6 @@ void init_thread_pool(int num_threads, void (*request_handler)(int))
       exit(err);
     }
   }
-
-  for (int i = 0; i < num_threads; i++)
-  {
-    pthread_join(threads[i], NULL);
-  }
 }
 
 /*
@@ -359,6 +354,7 @@ void serve_forever(int *socket_number, void (*request_handler)(int))
   printf("Listening on port %d...\n", server_port);
 
   init_thread_pool(num_threads, request_handler);
+  wq_init(&work_queue);
 
   while (1)
   {
