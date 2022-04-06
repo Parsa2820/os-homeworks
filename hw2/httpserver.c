@@ -274,29 +274,30 @@ void handle_proxy_request(int fd)
    */
 }
 
+void *start_thread(void *arg)
+{
+  void (*request_handler)(int) = arg;
+
+  while (1)
+  {
+    int fd = wq_pop(&work_queue);
+    request_handler(fd);
+    close(fd);
+  }
+
+  return NULL;
+}
+
 void init_thread_pool(int num_threads, void (*request_handler)(int))
 {
   /*
    * TODO: Part of your solution for Task 2 goes here!
    */
-
-  void *start_thread(void *arg)
-  {
-    while (1)
-    {
-      int fd = wq_pop(&work_queue);
-      request_handler(fd);
-      close(fd);
-    }
-
-    return NULL;
-  }
-
   pthread_t *threads = malloc(sizeof(pthread_t) * num_threads);
 
   for (int i = 0; i < num_threads; i++)
   {
-    int err = pthread_create(threads + i, NULL, &start_thread, NULL);
+    int err = pthread_create(threads + i, NULL, start_thread, request_handler);
 
     if (err)
     {
