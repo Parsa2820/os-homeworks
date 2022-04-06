@@ -21,7 +21,7 @@
 #define LONG_MAX_NUMBER_OF_DIGITS 20
 #define INDEX_FILE "/index.html"
 /* Maximum size of the generated html file (1<<20 = 1mb) */
-#define MAX_HTML_LENGTH 1<<30
+#define MAX_HTML_LENGTH 1 << 30
 
 /*
  * Global configuration variables.
@@ -279,6 +279,36 @@ void init_thread_pool(int num_threads, void (*request_handler)(int))
   /*
    * TODO: Part of your solution for Task 2 goes here!
    */
+
+  void *start_thread(void *arg)
+  {
+    while (1)
+    {
+      int fd = wq_pop(&work_queue);
+      request_handler(fd);
+      close(fd);
+    }
+
+    return NULL;
+  }
+
+  pthread_t *threads = malloc(sizeof(pthread_t) * num_threads);
+
+  for (int i = 0; i < num_threads; i++)
+  {
+    int err = pthread_create(threads + i, NULL, &start_thread, NULL);
+
+    if (err)
+    {
+      perror("Failed to create thread");
+      exit(err);
+    }
+  }
+
+  for (int i = 0; i < num_threads; i++)
+  {
+    pthread_join(threads[i], NULL);
+  }
 }
 
 /*
@@ -346,8 +376,7 @@ void serve_forever(int *socket_number, void (*request_handler)(int))
            client_address.sin_port);
 
     // TODO: Change me?
-    request_handler(client_socket_number);
-    close(client_socket_number);
+    wq_push(&work_queue, client_socket_number);
 
     printf("Accepted connection from %s on port %d\n",
            inet_ntoa(client_address.sin_addr),
