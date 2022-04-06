@@ -353,8 +353,8 @@ void serve_forever(int *socket_number, void (*request_handler)(int))
 
   printf("Listening on port %d...\n", server_port);
 
-  init_thread_pool(num_threads, request_handler);
   wq_init(&work_queue);
+  init_thread_pool(num_threads, request_handler);
 
   while (1)
   {
