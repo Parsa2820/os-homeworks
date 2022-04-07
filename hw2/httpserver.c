@@ -230,7 +230,7 @@ void *proxy(void *arg)
 {
   proxy_info_t info = *(proxy_info_t *)arg;
   char buf[LIBHTTP_REQUEST_MAX_SIZE];
-  int n;
+  size_t n;
 
   while ((*info.is_connection_open) && ((n = read(info.src_fd, buf, LIBHTTP_REQUEST_MAX_SIZE)) > 0))
   {
