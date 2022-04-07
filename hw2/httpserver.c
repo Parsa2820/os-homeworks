@@ -83,23 +83,35 @@ char *list_directory_in_html(char *path)
  */
 void serve_file(int fd, char *path)
 {
+  char *mime_type = http_get_mime_type(path);
   char *content_length_string = file_content_length(path);
 
   http_start_response(fd, 200);
-  http_send_header(fd, "Content-Type", http_get_mime_type(path));
+  http_send_header(fd, "Content-Type", mime_type);
   http_send_header(fd, "Content-Length", content_length_string); // Change this too
   http_end_headers(fd);
 
   /* TODO: PART 1 Bullet 2 */
-  FILE *f = fopen(path, "r");
   size_t content_length = atoi(content_length_string);
   char *content = malloc(sizeof(char) * content_length);
-  fread(content, sizeof(char), content_length, f);
+  FILE *f;
+
+  if (strncmp(mime_type, "text", 4) == 0)
+  {
+    f = fopen(path, "r");
+    fread(content, sizeof(char), content_length, f);
+    http_send_string(fd, content);
+  }
+  else
+  {
+    f = fopen(path, "rb");
+    size_t n = fread(content, sizeof(char), content_length, f);
+    http_send_data(fd, content, n);
+  }
+
   fclose(f);
-  http_send_string(fd, content);
   free(content);
   free(content_length_string);
-  return;
 }
 
 void serve_directory(int fd, char *path)
