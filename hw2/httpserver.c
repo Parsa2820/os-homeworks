@@ -347,6 +347,7 @@ void handle_proxy_request(int fd)
    * TODO: Your solution for task 3 belongs here!
    */
   exchange_client_server_data(fd, target_fd);
+  close(target_fd);
 }
 
 void *start_thread(void *arg)
