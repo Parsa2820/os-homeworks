@@ -22,6 +22,7 @@
 #define INDEX_FILE "/index.html"
 /* Maximum size of the generated html file (1<<20 = 1mb) */
 #define MAX_HTML_LENGTH 1 << 30
+#define URL_SPACE "%20"
 
 /*
  * Global configuration variables.
@@ -73,6 +74,30 @@ char *list_directory_in_html(char *path)
   return html;
 }
 
+void move_string_left(char *str, int step)
+{
+  for (int i = 0; i < strlen(str); i++)
+  {
+    str[i] = str[i + step];
+  }
+}
+
+void replace_url_space(char *path)
+{
+  char *iter = path;
+
+  while (*iter != '\0')
+  {
+    if (strncmp(iter, URL_SPACE, strlen(URL_SPACE)) == 0)
+    {
+      iter[0] = ' ';
+      move_string_left(iter + 1, strlen(URL_SPACE) - 1);
+    }
+
+    iter++;
+  }
+}
+
 /*
  * Serves the contents the file stored at `path` to the client socket `fd`.
  * It is the caller's reponsibility to ensure that the file stored at `path` exists.
@@ -105,8 +130,12 @@ void serve_file(int fd, char *path)
   else
   {
     f = fopen(path, "rb");
-    size_t n = fread(content, sizeof(char), content_length, f);
-    http_send_data(fd, content, n);
+    size_t n;
+
+    while ((n = fread(content, sizeof(char), content_length, f)) > 0)
+    {
+      http_send_data(fd, content, n);
+    }
   }
 
   fclose(f);
@@ -183,6 +212,7 @@ void handle_files_request(int fd)
   path[0] = '.';
   path[1] = '/';
   memcpy(path + 2, request->path, strlen(request->path) + 1);
+  replace_url_space(path);
 
   /*
    * TODO: First is to serve files. If the file given by `path` exists,
@@ -194,9 +224,6 @@ void handle_files_request(int fd)
    *
    * Feel FREE to delete/modify anything on this function.
    */
-
-  // printf("path: %s\n", path);
-
   struct stat s;
   int err = stat(path, &s);
 

@@ -171,6 +171,10 @@ char *http_get_mime_type(char *file_name)
   {
     return "application/pdf";
   }
+  else if (strcmp(file_extension, ".mp3") == 0)
+  {
+    return "audio/mpeg";
+  }
   else
   {
     return "text/plain";
