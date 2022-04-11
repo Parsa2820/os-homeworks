@@ -251,7 +251,6 @@ typedef struct proxy_info
   int src_fd;
   int dst_fd;
   int *is_connection_open;
-  pthread_mutex_t *mutex;
   pthread_cond_t *cond;
 } proxy_info_t;
 
@@ -278,8 +277,8 @@ void exchange_client_server_data(int client, int server)
   pthread_cond_t cond;
   pthread_mutex_init(&mutex, NULL);
   pthread_cond_init(&cond, NULL);
-  proxy_info_t info = {client, server, &is_connection_open, &mutex, &cond};
-  proxy_info_t reverse_info = {server, client, &is_connection_open, &mutex, &cond};
+  proxy_info_t info = {client, server, &is_connection_open, &cond};
+  proxy_info_t reverse_info = {server, client, &is_connection_open, &cond};
   pthread_t proxy_thread;
   pthread_t reverse_proxy_thread;
   pthread_create(&proxy_thread, NULL, proxy, &info);
@@ -287,9 +286,7 @@ void exchange_client_server_data(int client, int server)
 
   while (is_connection_open)
   {
-    // pthread_mutex_lock(&mutex);
-    pthread_cond_wait(&cond, &mutex);
-    // pthread_mutex_unlock(&mutex);
+    pthread_cond_wait(&cond, mutex);
   }
 
   pthread_cancel(proxy_thread);
