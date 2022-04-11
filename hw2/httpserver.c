@@ -267,6 +267,7 @@ void *proxy(void *arg)
   }
 
   *info.is_connection_open = 0;
+  pthread_cond_broadcast(info.cond);
   return NULL;
 }
 
@@ -286,9 +287,9 @@ void exchange_client_server_data(int client, int server)
 
   while (is_connection_open)
   {
-    pthread_mutex_lock(&mutex);
+    // pthread_mutex_lock(&mutex);
     pthread_cond_wait(&cond, &mutex);
-    pthread_mutex_unlock(&mutex);
+    // pthread_mutex_unlock(&mutex);
   }
 
   pthread_cancel(proxy_thread);
