@@ -19,7 +19,7 @@ s_block_ptr heap_start = NULL;
 void *mm_malloc(size_t size)
 {
 #ifdef MM_USE_STUBS
-    return calloc(1, size);
+    return c_a_l_l_o_c(1, size);
 #else
     if (size == 0)
     {
@@ -56,7 +56,7 @@ void *mm_malloc(size_t size)
 void *mm_realloc(void *ptr, size_t size)
 {
 #ifdef MM_USE_STUBS
-    return realloc(ptr, size);
+    return r_e_a_l_l_o_c(ptr, size);
 #else
     return NULL;
 #endif
@@ -65,7 +65,7 @@ void *mm_realloc(void *ptr, size_t size)
 void mm_free(void *ptr)
 {
 #ifdef MM_USE_STUBS
-    free(ptr);
+    f_r_e_e(ptr);
 #else
     if (ptr == NULL)
     {
