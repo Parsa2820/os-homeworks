@@ -36,8 +36,8 @@ void *mm_malloc(size_t size)
             current_block->_free = 0;
             return current_block->ptr;
         }
-        current_block = current_block->next;
         last_block = current_block;
+        current_block = current_block->next;
     }
 
     s_block_ptr new_block = extend_heap(last_block, size);
