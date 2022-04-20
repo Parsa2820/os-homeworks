@@ -1,7 +1,7 @@
 /*
  * mm_alloc.h
  *
- * Exports a clone of the interface documented in "man 3 malloc".
+ * Exports a clone of the interface documented in "man 3 _malloc".
  */
 
 #pragma once
@@ -30,7 +30,7 @@ struct s_block {
     size_t size;
     struct s_block *next;
     struct s_block *prev;
-    int free;
+    int _free;
     void *ptr;
     /* A pointer to the allocated block */
     char data [0];

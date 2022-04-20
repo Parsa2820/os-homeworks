@@ -31,9 +31,9 @@ void *mm_malloc(size_t size)
 
     while (current_block != NULL)
     {
-        if (current_block->free == 1 && current_block->size >= size)
+        if (current_block->_free == 1 && current_block->size >= size)
         {
-            current_block->free = 0;
+            current_block->_free = 0;
             return current_block->ptr;
         }
         current_block = current_block->next;
@@ -47,7 +47,7 @@ void *mm_malloc(size_t size)
         return NULL;
     }
 
-    new_block->free = 0;
+    new_block->_free = 0;
     memset(new_block->ptr, 0, size);
     return new_block->ptr;
 #endif
@@ -73,7 +73,7 @@ void mm_free(void *ptr)
     }
 
     s_block_ptr block = get_block(ptr);
-    block->free = 1;
+    block->_free = 1;
     // block = fusion(block);
 #endif
 }
@@ -127,7 +127,7 @@ s_block_ptr extend_heap(s_block_ptr last, size_t s)
     }
 
     new_block->next = NULL;    
-    new_block->free = 1;
+    new_block->_free = 1;
     new_block->ptr = new_block + 1;
     return new_block;
 }
