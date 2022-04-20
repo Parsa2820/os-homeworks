@@ -93,8 +93,12 @@ void mm_free(void *ptr)
     }
 
     s_block_ptr block = get_block(ptr);
-    block->_free = 1;
-    // block = fusion(block);
+
+    if (block != NULL)
+    {
+        block->_free = 1;
+        // block = fusion(block);
+    }
 #endif
 }
 
