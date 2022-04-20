@@ -97,7 +97,7 @@ void mm_free(void *ptr)
     if (block != NULL)
     {
         block->_free = 1;
-        // block = fusion(block);
+        fusion(block);
     }
 #endif
 }
@@ -106,9 +106,36 @@ void split_block(s_block_ptr b, size_t s)
 {
 }
 
-s_block_ptr fusion(s_block_ptr b)
+void fusion(s_block_ptr b)
 {
-    return NULL;
+    if (b == NULL)
+    {
+        return;
+    }
+
+    if (b->prev != NULL && b->prev->_free == 1)
+    {
+        b->prev->size += b->size;
+        b->prev->next = b->next;
+
+        if (b->next != NULL)
+        {
+            b->next->prev = b->prev;
+        }
+
+        b = b->prev;
+    }
+
+    if (b->next != NULL && b->next->_free == 1)
+    {
+        b->size += b->next->size;
+        b->next = b->next->next;
+
+        if (b->next != NULL)
+        {
+            b->next->prev = b;
+        }
+    }
 }
 
 s_block_ptr get_block(void *p)
