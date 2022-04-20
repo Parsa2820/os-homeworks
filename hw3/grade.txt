@@ -1,4 +1,4 @@
-I finished judging your code on 20-04-2022 at 08:25:28.
+I finished judging your code on 20-04-2022 at 08:41:55.
 
 I ran your code on each test case separately! You can see the results below:
 
@@ -13,14 +13,7 @@ Test 2: Test of exceptional cases --> OK! 2.15 points; Afarin!!!
 
 
 ================================================================================================================
-Test 3: Fusion simple test --> Runtime error occurred (Exit code: 1)
-Although you got no points from this test, below is the output of the test (STDOUT):
-----------<BEGIN AUTO GENERATED OUTPUT>-----------
-
-Ok I just assured that you couldn't allocated 800 GB.
-I guess fusion is not working...
-
------------<END AUTO GENERATED OUTPUT>------------
+Test 3: Fusion simple test --> OK! 4.5 points; Afarin!!!
 ================================================================================================================
 
 
@@ -42,7 +35,7 @@ Although you got no points from this test, below is the output of the test (STDO
 ----------<BEGIN AUTO GENERATED OUTPUT>-----------
 
 Ok I just assured that you couldn't allocated 800 GB.
-After free you must be able to allocate for me
+Apparently Split block is not working
 
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
@@ -55,7 +48,7 @@ Although you got no points from this test, below is the output of the test (STDO
 
 Ok I just assured that you couldn't allocated 800 GB.
 You passed the first step...
-
+Maybe fusion is not working!
 
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
@@ -67,7 +60,7 @@ Although you got no points from this test, below is the output of the test (STDO
 ----------<BEGIN AUTO GENERATED OUTPUT>-----------
 
 Ok I just assured that you couldn't allocated 800 GB.
-Step 1 failed: I guess fusion isn't working properly.
+Step 3 failed: I guess split block isn't working properly
 
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
@@ -90,7 +83,7 @@ Although you got no points from this test, below is the output of the test (STDO
 ----------<BEGIN AUTO GENERATED OUTPUT>-----------
 
 Ok I just assured that you couldn't allocated 800 GB.
-I guess fusion is not working...
+You didn't zero data in realloc
 
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
@@ -109,4 +102,4 @@ The answer is not right. There must be some problems (2)...
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
 
-Your final grade is: 4.1/100.0epoch: 1650443129
+Your final grade is: 8.6/100.0epoch: 1650444115
