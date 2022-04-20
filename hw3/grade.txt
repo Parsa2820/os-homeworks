@@ -1,4 +1,4 @@
-I finished judging your code on 20-04-2022 at 07:29:21.
+I finished judging your code on 20-04-2022 at 08:07:18.
 
 I ran your code on each test case separately! You can see the results below:
 
@@ -43,7 +43,13 @@ Ok I just assured that you couldn't allocated 800 GB.
 
 
 ================================================================================================================
-Test 5: Split block simple test --> Time limit exceeded(20s)! 0 points :(
+Test 5: Split block simple test --> Runtime error occurred (Exit code: -11)
+Although you got no points from this test, below is the output of the test (STDOUT):
+----------<BEGIN AUTO GENERATED OUTPUT>-----------
+
+Ok I just assured that you couldn't allocated 800 GB.
+
+-----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
 
 
@@ -92,16 +98,15 @@ Ok I just assured that you couldn't allocated 800 GB.
 
 
 ================================================================================================================
-Test 10: Two dimensional array with arithmetic calculations on a real-world problem --> Runtime error occurred (Exit code: 1)
+Test 10: Two dimensional array with arithmetic calculations on a real-world problem --> Runtime error occurred (Exit code: -11)
 Although you got no points from this test, below is the output of the test (STDOUT):
 ----------<BEGIN AUTO GENERATED OUTPUT>-----------
 
 Ok you have allocated the array so far.
 Your answer is correct.
 Now we're gonna test with some reallocs!
-You couldn't realloc.
 
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
 
-Your final grade is: 2.15/100.0epoch: 1650439763
+Your final grade is: 2.15/100.0epoch: 1650442041
