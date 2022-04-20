@@ -69,7 +69,16 @@ void *mm_realloc(void *ptr, size_t size)
         return NULL;
     }
 
-    return NULL;
+    void *new_ptr = mm_malloc(size);
+
+    if (new_ptr == NULL)
+    {
+        return NULL;
+    }
+
+    memcpy(new_ptr, ptr, size);
+    mm_free(ptr);
+    return new_ptr;
 #endif
 }
 
@@ -89,9 +98,8 @@ void mm_free(void *ptr)
 #endif
 }
 
-void split_block (s_block_ptr b, size_t s)
+void split_block(s_block_ptr b, size_t s)
 {
-
 }
 
 s_block_ptr fusion(s_block_ptr b)
@@ -99,7 +107,7 @@ s_block_ptr fusion(s_block_ptr b)
     return NULL;
 }
 
-s_block_ptr get_block (void *p)
+s_block_ptr get_block(void *p)
 {
     s_block_ptr current_block = heap_start;
 
@@ -137,7 +145,7 @@ s_block_ptr extend_heap(s_block_ptr last, size_t s)
         new_block->prev = last;
     }
 
-    new_block->next = NULL;    
+    new_block->next = NULL;
     new_block->_free = 1;
     new_block->ptr = new_block + 1;
     return new_block;
