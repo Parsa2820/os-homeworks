@@ -58,6 +58,17 @@ void *mm_realloc(void *ptr, size_t size)
 #ifdef MM_USE_STUBS
     return r_e_a_l_l_o_c(ptr, size);
 #else
+    if (ptr == NULL)
+    {
+        return mm_malloc(size);
+    }
+
+    if (size == 0)
+    {
+        mm_free(ptr);
+        return NULL;
+    }
+
     return NULL;
 #endif
 }
