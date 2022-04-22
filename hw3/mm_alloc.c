@@ -126,7 +126,7 @@ void fusion(s_block_ptr b)
 
     if (b->prev != NULL && b->prev->_free == 1)
     {
-        b->prev->size += b->size;
+        b->prev->size += b->size + BLOCK_SIZE;
         b->prev->next = b->next;
 
         if (b->next != NULL)
@@ -139,7 +139,7 @@ void fusion(s_block_ptr b)
 
     if (b->next != NULL && b->next->_free == 1)
     {
-        b->size += b->next->size;
+        b->size += b->next->size + BLOCK_SIZE;
         b->next = b->next->next;
 
         if (b->next != NULL)
