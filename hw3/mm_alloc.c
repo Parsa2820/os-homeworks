@@ -107,6 +107,7 @@ void mm_free(void *ptr)
     if (block != NULL)
     {
         block->_free = 1;
+        memset(block->ptr, 0, block->size);
         fusion(block);
     }
 #endif
