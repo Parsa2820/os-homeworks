@@ -1,4 +1,4 @@
-I finished judging your code on 22-04-2022 at 14:49:53.
+I finished judging your code on 22-04-2022 at 15:01:46.
 
 I ran your code on each test case separately! You can see the results below:
 
@@ -45,13 +45,7 @@ Step 4 failed.
 
 
 ================================================================================================================
-Test 8: Realloc simple test --> Runtime error occurred (Exit code: 1)
-Although you got no points from this test, below is the output of the test (STDOUT):
-----------<BEGIN AUTO GENERATED OUTPUT>-----------
-
-Wrong realloc 2
-
------------<END AUTO GENERATED OUTPUT>------------
+Test 8: Realloc simple test --> OK! 6.1 points; Afarin!!!
 ================================================================================================================
 
 
@@ -68,16 +62,7 @@ You didn't zero data in realloc
 
 
 ================================================================================================================
-Test 10: Two dimensional array with arithmetic calculations on a real-world problem --> Runtime error occurred (Exit code: 1)
-Although you got no points from this test, below is the output of the test (STDOUT):
-----------<BEGIN AUTO GENERATED OUTPUT>-----------
-
-Ok you have allocated the array so far.
-Your answer is correct.
-Now we're gonna test with some reallocs!
-The answer is not right. There must be some problems (2)...
-
------------<END AUTO GENERATED OUTPUT>------------
+Test 10: Two dimensional array with arithmetic calculations on a real-world problem --> OK! 13.8 points; Afarin!!!
 ================================================================================================================
 
-Your final grade is: 37.6/100.0epoch: 1650638993
+Your final grade is: 57.5/100.0epoch: 1650639706
