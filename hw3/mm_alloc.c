@@ -70,6 +70,13 @@ void *mm_realloc(void *ptr, size_t size)
         return NULL;
     }
 
+    s_block_ptr current_block = get_block(ptr);
+
+    if (current_block == NULL)
+    {
+        return NULL;
+    }
+
     void *new_ptr = mm_malloc(size);
 
     if (new_ptr == NULL)
@@ -77,7 +84,8 @@ void *mm_realloc(void *ptr, size_t size)
         return NULL;
     }
 
-    memcpy(new_ptr, ptr, size);
+    size_t min = (size < current_block->size) ? size : current_block->size;
+    memcpy(new_ptr, ptr, min);
     mm_free(ptr);
     return new_ptr;
 #endif
