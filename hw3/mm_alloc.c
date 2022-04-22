@@ -84,6 +84,7 @@ void *mm_realloc(void *ptr, size_t size)
         return NULL;
     }
 
+    memset(new_ptr, 0, size);
     size_t min = (size < current_block->size) ? size : current_block->size;
     memcpy(new_ptr, ptr, min);
     mm_free(ptr);
