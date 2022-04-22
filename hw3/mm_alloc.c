@@ -33,6 +33,7 @@ void *mm_malloc(size_t size)
     {
         if (current_block->_free == 1 && current_block->size >= size)
         {
+            split_block(current_block, size);
             current_block->_free = 0;
             return current_block->ptr;
         }
@@ -104,6 +105,16 @@ void mm_free(void *ptr)
 
 void split_block(s_block_ptr b, size_t s)
 {
+    if (b->size - s > BLOCK_SIZE)
+    {
+        s_block_ptr new_block = (s_block_ptr)((char *)b + BLOCK_SIZE + s);
+        new_block->size = b->size - BLOCK_SIZE - s;
+        new_block->_free = 1;
+        new_block->next = b->next;
+        new_block->prev = b;
+        b->next = new_block;
+        b->size = s;
+    }
 }
 
 void fusion(s_block_ptr b)
