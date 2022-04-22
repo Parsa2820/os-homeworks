@@ -1,4 +1,4 @@
-I finished judging your code on 22-04-2022 at 14:41:34.
+I finished judging your code on 22-04-2022 at 14:44:43.
 
 I ran your code on each test case separately! You can see the results below:
 
@@ -18,14 +18,7 @@ Test 3: Fusion simple test --> OK! 4.5 points; Afarin!!!
 
 
 ================================================================================================================
-Test 4: Fusion complicated test --> Runtime error occurred (Exit code: 1)
-Although you got no points from this test, below is the output of the test (STDOUT):
-----------<BEGIN AUTO GENERATED OUTPUT>-----------
-
-Ok I just assured that you couldn't allocated 800 GB.
-I guess fusion is not working...
-
------------<END AUTO GENERATED OUTPUT>------------
+Test 4: Fusion complicated test --> OK! 11.5 points; Afarin!!!
 ================================================================================================================
 
 
@@ -42,15 +35,7 @@ Apparently Split block is not working
 
 
 ================================================================================================================
-Test 6: Test large amount of data --> Runtime error occurred (Exit code: 1)
-Although you got no points from this test, below is the output of the test (STDOUT):
-----------<BEGIN AUTO GENERATED OUTPUT>-----------
-
-Ok I just assured that you couldn't allocated 800 GB.
-You passed the first step...
-Maybe fusion is not working!
-
------------<END AUTO GENERATED OUTPUT>------------
+Test 6: Test large amount of data --> OK! 10 points; Afarin!!!
 ================================================================================================================
 
 
@@ -60,7 +45,7 @@ Although you got no points from this test, below is the output of the test (STDO
 ----------<BEGIN AUTO GENERATED OUTPUT>-----------
 
 Ok I just assured that you couldn't allocated 800 GB.
-Step 3 failed: I guess split block isn't working properly
+Step 4 failed.
 
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
@@ -102,4 +87,4 @@ The answer is not right. There must be some problems (2)...
 -----------<END AUTO GENERATED OUTPUT>------------
 ================================================================================================================
 
-Your final grade is: 8.6/100.0epoch: 1650638494
+Your final grade is: 30.1/100.0epoch: 1650638684
