@@ -1,4 +1,4 @@
-I finished judging your code on 22-04-2022 at 15:01:46.
+I finished judging your code on 22-04-2022 at 15:03:56.
 
 I ran your code on each test case separately! You can see the results below:
 
@@ -65,4 +65,4 @@ You didn't zero data in realloc
 Test 10: Two dimensional array with arithmetic calculations on a real-world problem --> OK! 13.8 points; Afarin!!!
 ================================================================================================================
 
-Your final grade is: 57.5/100.0epoch: 1650639706
+Your final grade is: 57.5/100.0epoch: 1650639837
