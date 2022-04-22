@@ -125,6 +125,7 @@ void split_block(s_block_ptr b, size_t s)
         new_block->ptr = (char *)new_block + BLOCK_SIZE;
         b->next = new_block;
         b->size = s;
+        memset(new_block->ptr, 0, new_block->size);
     }
 }
 
@@ -158,6 +159,8 @@ void fusion(s_block_ptr b)
             b->next->prev = b;
         }
     }
+
+    memset(b->ptr, 0, b->size);
 }
 
 s_block_ptr get_block(void *p)
