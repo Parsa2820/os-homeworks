@@ -112,6 +112,7 @@ void split_block(s_block_ptr b, size_t s)
         new_block->_free = 1;
         new_block->next = b->next;
         new_block->prev = b;
+        new_block->ptr = (char *)new_block + BLOCK_SIZE;
         b->next = new_block;
         b->size = s;
     }
