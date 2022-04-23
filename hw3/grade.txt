@@ -1,4 +1,4 @@
-I finished judging your code on 23-04-2022 at 10:45:06.
+I finished judging your code on 23-04-2022 at 10:50:52.
 
 I ran your code on each test case separately! You can see the results below:
 
@@ -28,19 +28,19 @@ Test 5: Split block simple test --> OK! 7.5 points; Afarin!!!
 
 
 ================================================================================================================
-Test 6: Test large amount of data --> Runtime error occurred (Exit code: -11)
+Test 6: Test large amount of data --> OK! 10 points; Afarin!!!
+================================================================================================================
+
+
+================================================================================================================
+Test 7: A combination of fusion and split block --> Runtime error occurred (Exit code: 1)
 Although you got no points from this test, below is the output of the test (STDOUT):
 ----------<BEGIN AUTO GENERATED OUTPUT>-----------
 
 Ok I just assured that you couldn't allocated 800 GB.
-You passed the first step...
+Step 4 failed.
 
 -----------<END AUTO GENERATED OUTPUT>------------
-================================================================================================================
-
-
-================================================================================================================
-Test 7: A combination of fusion and split block --> OK! 25 points; Afarin!!!
 ================================================================================================================
 
 
@@ -58,4 +58,4 @@ Test 9: Realloc complicated test --> OK! 17.5 points; Afarin!!!
 Test 10: Two dimensional array with arithmetic calculations on a real-world problem --> OK! 13.8 points; Afarin!!!
 ================================================================================================================
 
-Your final grade is: 90.0/100.0epoch: 1650710707
+Your final grade is: 75.0/100.0epoch: 1650711052
