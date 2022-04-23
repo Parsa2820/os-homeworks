@@ -127,7 +127,7 @@ void split_block(s_block_ptr b, size_t s)
         {
             b->next->prev = new_block;
         }
-        
+
         b->next = new_block;
         b->size = s;
     }
