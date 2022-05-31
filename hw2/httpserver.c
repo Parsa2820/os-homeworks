@@ -286,7 +286,7 @@ void exchange_client_server_data(int client, int server)
 
   while (is_connection_open)
   {
-    pthread_cond_wait(&cond, mutex);
+    pthread_cond_wait(&cond, &mutex);
   }
 
   pthread_cancel(proxy_thread);
